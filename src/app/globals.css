@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0f0f12;
+  --color-surface: #1a1a1e;
+  --color-primary: #9945ff;
+  --color-secondary: #14f195;
+  --color-muted: #94a3b8;
+  
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
+}
+
+:root {
+  --background: #0f0f12;
+  --foreground: #ffffff;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Solana Wallet Provider Overrides --- */
+
+/* The Main Trigger Button */
+.wallet-adapter-button {
+  font-family: var(--font-sans) !important;
+  justify-content: center !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Modal Styling to match Figma */
+.wallet-adapter-modal-wrapper {
+  background: #1a1a1e !important; 
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+}
+
+.wallet-adapter-modal-button-close {
+  background: #2d2d33 !important;
+  border-radius: 50% !important;
+}
+
+.wallet-adapter-modal-title {
+  /* color: white !important; */
+  font-weight: 700 !important;
+  font-family: var(--font-sans) !important;
+}
+
+/* Wallet Option Buttons inside Modal */
+.wallet-adapter-modal-list .wallet-adapter-button {
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  margin-bottom: 8px !important;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button:hover {
+  background: #9945ff !important;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button-end-icon {
+  display: none !important; /* Cleaner look without extra icons */
+}
