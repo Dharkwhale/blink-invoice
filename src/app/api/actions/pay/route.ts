@@ -1,3 +1,5 @@
+"use client";
+
 import { NextRequest, NextResponse } from "next/server";
 import {
   Connection,
@@ -23,14 +25,19 @@ export async function OPTIONS() {
 
 // GET — returns the Blink metadata card shown on X / dial.to
 export async function GET(req: NextRequest) {
-  const { searchParams, origin } = new URL(req.url);
+  const { searchParams } = new URL(req.url);
+
+  // 1. Force the use of your Netlify URL to avoid Vercel ghosting
+  // Ensure this matches your Netlify Site Settings exactly!
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://blink-invoice.netlify.app";
 
   const name = searchParams.get("name") || "Payment";
   const sol = searchParams.get("sol") || "0";
   const desc = searchParams.get("desc") || "Payment via BlinkInvoice";
 
   const payload = {
-    icon: `${origin}/blink-icon.svg`,
+    // 2. Use appUrl for the icon to ensure the image is fetched from Netlify
+    icon: `${appUrl}/blink-icon.svg`, 
     title: name,
     description: desc,
     label: `Pay ${sol} SOL`,
@@ -38,7 +45,7 @@ export async function GET(req: NextRequest) {
       actions: [
         {
           label: `Pay ${sol} SOL`,
-          // POST goes to the same URL — the wallet injector passes { account }
+          // 3. Keep req.url here as it contains the specific query params for the transaction
           href: req.url,
         },
       ],
@@ -48,11 +55,10 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(payload, { headers: CORS });
 }
 
-// POST — called by Phantom/Solflare via the Blink; returns a serialized transaction
+// POST — remains the same as your current logic
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-
     const sol = searchParams.get("sol");
     const to = searchParams.get("to");
 
@@ -91,7 +97,6 @@ export async function POST(req: NextRequest) {
     transaction.lastValidBlockHeight = lastValidBlockHeight;
     transaction.feePayer = payer;
 
-    // Serialize without requiring buyer signature — the wallet will sign it
     const serialized = transaction.serialize({ requireAllSignatures: false });
     const base64Tx = Buffer.from(serialized).toString("base64");
 

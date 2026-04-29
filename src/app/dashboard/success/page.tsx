@@ -20,6 +20,8 @@ function SuccessContent() {
   const [copiedBlink, setCopiedBlink] = useState(false);
   const [copiedLocal, setCopiedLocal] = useState(false);
 
+  const [invoiceId] = useState(() => "LINK-" + String(Math.floor(Math.random() * 10000)));
+
   const invoiceData: InvoiceData = {
     merchantName: searchParams.get("name") || "Merchant",
     brandLogo: searchParams.get("img") || "https://img.logoipsum.com/296.svg",
@@ -27,10 +29,12 @@ function SuccessContent() {
     amountUsdc: (Number(searchParams.get("sol")) * 142.50).toFixed(2),
     amountNgn: (Number(searchParams.get("sol")) * 214800).toLocaleString(),
     description: searchParams.get("desc") || "Payment Details",
-    invoiceId: "LINK-" + String(Math.floor(Math.random() * 10000)),
+    invoiceId,
   };
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
   const isLocalhost = origin.includes("localhost") || origin.includes("127.0.0.1");
 
   const blinkParams = new URLSearchParams({
