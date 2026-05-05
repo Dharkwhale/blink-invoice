@@ -1,5 +1,3 @@
-"use client";
-
 import { NextRequest, NextResponse } from "next/server";
 import {
   Connection,
@@ -29,7 +27,7 @@ export async function GET(req: NextRequest) {
 
   // 1. Force the use of your Netlify URL to avoid Vercel ghosting
   // Ensure this matches your Netlify Site Settings exactly!
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://blink-invoice.netlify.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://blinkinv.netlify.app";
 
   const name = searchParams.get("name") || "Payment";
   const sol = searchParams.get("sol") || "0";
