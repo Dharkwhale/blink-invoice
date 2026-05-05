@@ -25,25 +25,23 @@ export async function OPTIONS() {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  // 1. Force the use of your Netlify URL to avoid Vercel ghosting
-  // Ensure this matches your Netlify Site Settings exactly!
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://blinkinv.netlify.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
 
   const name = searchParams.get("name") || "Payment";
   const sol = searchParams.get("sol") || "0";
   const desc = searchParams.get("desc") || "Payment via BlinkInvoice";
 
   const payload = {
-    // 2. Use appUrl for the icon to ensure the image is fetched from Netlify
-    icon: `${appUrl}/blink-icon.svg`, 
+    type: "action",
+    icon: `${appUrl}/blink-icon.svg`,
     title: name,
     description: desc,
     label: `Pay ${sol} SOL`,
     links: {
       actions: [
         {
+          type: "transaction",
           label: `Pay ${sol} SOL`,
-          // 3. Keep req.url here as it contains the specific query params for the transaction
           href: req.url,
         },
       ],
@@ -53,7 +51,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(payload, { headers: CORS });
 }
 
-// POST — remains the same as your current logic
+// POST — builds and returns the unsigned SOL transfer transaction
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -99,7 +97,7 @@ export async function POST(req: NextRequest) {
     const base64Tx = Buffer.from(serialized).toString("base64");
 
     return NextResponse.json(
-      { transaction: base64Tx, message: `Pay ${sol} SOL — powered by BlinkInvoice` },
+      { type: "transaction", transaction: base64Tx, message: `Pay ${sol} SOL — powered by BlinkInvoice` },
       { headers: CORS }
     );
   } catch (err) {
